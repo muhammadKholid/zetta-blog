@@ -1,64 +1,135 @@
-const {find, findAggregate, findById, findByIdAndDelete, findByIdAndUpdate, create} = require("../models/article.model")
-const {findComment, findByIdComment, findByIdAndDeleteComment, findByIdAndUpdateComment, createComment} = require("../models/comment.model")
+// const {find, findAggregate, findById, findByIdAndDelete, findByIdAndUpdate, create} = require("../models/article.model")
+// const {findComment, findByIdComment, findByIdAndDeleteComment, findByIdAndUpdateComment, createComment} = require("../models/comment.model")
 // const { db } = require('../config/database.config');
 // const dbase = db();
 // const Article = dbase.collection('articles')
 // const { ObjectId } = require('mongodb');
+const Article = require('../models/article.model');
+const Comment = require('../models/comment.model');
 
 module.exports = {
-  articles: async args => {
+  articles: async () => {
     try {
-      // const {sortBy, sortOrder, filter, pagination} = args;
-      // const articleFetched = await Article.aggregate()
-      const articleFetched = await find()
-      return articleFetched;
+      const articleFetched = await Article.find().populate({
+      path: 'comments',
+      select:
+        'comment',
+    }).exec()
+      return articleFetched.map(art => {
+        return {
+          ...art._doc,
+          _id: art._id,
+          createdAt: new Date(art._doc.createdAt).toISOString(),
+        }
+      })
     } catch (error) {
     console.log(error);
       throw error
     }
   },
+
+  articlesAggregator: async args => {
+    try {
+      const {page, size, sortBy, sortOrder, filter} = args;
+      // const articleFetched = await Article.aggregate()
+
+      const articleFetched = await Article.aggregate([
+        { $match: {title : filter}},
+        { $sort : {[`${sortBy}`] : sortOrder ? -1 : 1}},
+        { $skip : size * (page - 1)},
+        { $limit : size },
+        { $lookup: {
+        from: "comments",
+        localField: "comments",
+        foreignField: "_id",
+        as: "comments"
+      }},
+      ])
+      return articleFetched;
+    //   const articleFetched = await Article.find().populate({
+    //   path: 'comments',
+    //   select:
+    //     'comment',
+    // }).exec()
+      // return articleFetched.map(art => {
+      //   return {
+      //     ...art._doc,
+      //     _id: art._id,
+      //     createdAt: new Date(art._doc.createdAt).toISOString(),
+      //   }
+      // })
+    } catch (error) {
+    console.log(error);
+      throw error
+    }
+  },
+
   comments: async () => {
     try {
-      const commentFetched = await findComment()
+      const commentFetched = await Comment.find()
       return commentFetched;
     } catch (error) {
       throw error
     }
   },
 
-  article: async (id) => {
+  article: async (_id) => {
     try {
-      const articleFetched = await findById(id);
-      return articleFetched;
+      const articleFetched = await Article.findById(_id).populate({
+      path: 'comments',
+      select:
+        'comment',
+    }).exec();
+      return {
+        ...articleFetched._doc,
+        _id: articleFetched._id,
+        createdAt: new Date(articleFetched._doc.createdAt).toISOString(),
+      }
+      // return articleFetched;
     } catch (error) {
+    console.log(error)
       throw error
     }
   },
-  comment: async (id) => {
+  comment: async (_id) => {
     try {
-      const commentFetched = await findByIdComment(id);
+      const commentFetched = await Comment.findById(_id);
       return commentFetched;
     } catch (error) {
       throw error
     }
   },
-
   createArticle: async args => {
     try {
-      console.log(args.article);
-      const art = await create(args.article);
-      // console.log(art);
-      return 'succesfully create new articles';
+      const { body, title } = args.article
+      const art =new Article({
+        title,
+        body,
+      })
+      const newArt= await art.save()
+      return { ...newArt._doc, _id: newArt.id }
     } catch (error) {
+    console.log(error);
       throw error
     }
   },
+
   createComment: async args => {
     try {
-      const article = await createComment(args);
-      // console.log(art);
-      return 'succesfully create new comments';
+      const {comment, id} = args;
+      const com =new Comment({
+        comment,
+        article_id: id
+      })
+      const newCom= await com.save()
+      const findArt = await Article.findById(id);
+      findArt.comments.push(newCom._id);
+      await findArt.save();
+      // console.log(newCom, newCom._doc);
+
+      return { ...newCom._doc, _id: newCom.id }
     } catch (error) {
+    console.log(error);
       throw error
     }
   },
@@ -67,7 +138,7 @@ module.exports = {
     try {
       console.log('masuk update', args);
       const { id, body, title } = args
-      const updatedArtcile = await findByIdAndUpdate(id, { body, title });
+      const updatedArtcile = await Article.findByIdAndUpdate(id, { body, title });
       return `Article ${id} updated Successfully!!!`
     } catch (error) {
       throw error
@@ -77,7 +148,7 @@ module.exports = {
     try {
       console.log('masuk update', args);
       const { id, comment } = args
-      const updatedComment = await findByIdAndUpdateComment(id, {comment});
+      const updatedComment = await Comment.findByIdAndUpdate(id, {comment});
       return `Comment ${id} updated Successfully!!!`
     } catch (error) {
       throw error
@@ -86,12 +157,7 @@ module.exports = {
 
   deleteArticle: async args => {
     try {
-      await findByIdAndDelete(args.id);
-      // return {
-      //   ...deletedArticle._doc,
-      //   _id: deletedArticle.id,
-      //   createdAt: new Date(deletedArticle._doc.createdAt).toISOString(),
-      // }
+      await Article.findByIdAndDelete(args.id);
       console.log('delete', args.id);
       return `succesfully delete article with id ${args.id}`
     } catch (error) {
@@ -100,12 +166,7 @@ module.exports = {
   },
   deleteComment: async args => {
     try {
-      await findByIdAndDeleteComment(args.id);
-      // return {
-      //   ...deletedArticle._doc,
-      //   _id: deletedArticle.id,
-      //   createdAt: new Date(deletedArticle._doc.createdAt).toISOString(),
-      // }
+      await Comment.findByIdAndDelete(args.id);
       console.log('delete', args.id);
       return `succesfully delete comment with id ${args.id}`
     } catch (error) {

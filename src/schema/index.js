@@ -14,7 +14,6 @@ module.exports = buildSchema(`
   type Comment {
     _id: ID!
     comment : String!
-    article_id: ID!
   }
 
   input ArticleType {
@@ -23,16 +22,17 @@ module.exports = buildSchema(`
   }
 
   type RootQuery {
-    articles(sortBy: String,sortOrder: Int,filter: String,pagination: Int): [Article!]
-    article(id: String!): Article!
+    articles : [Article!]
+    articlesAggregator(page: Int, size: Int, sortBy: String,sortOrder: Int,filter: String): [Article!]
+    article(_id: String!): Article!
     comments : [Comment!]
-    comment(id: String): Comment
+    comment(_id: String): Comment
   }
   type Mutation {
-    createArticle(article:ArticleType): String,
+    createArticle(article:ArticleType): Article!,
     deleteArticle(id: String): String,
     updateArticle(id: String, body: String, title : String): String
-    createComment(comment:String, article_id: String): String,
+    createComment(comment:String, id: String): Comment!,
     deleteComment(id: String): String,
     updateComment(id: String, comment: String): String
   }

@@ -2,7 +2,7 @@
 
 ## how to use
 * clone this repo
-* ```yarn install``` or ```yarn add``` or ```npm install```
+* ```yarn install``` or  ```npm install```
 * ```yarn dev``` or ```npm run dev```
 * open http://localhost:8080/graphql
 

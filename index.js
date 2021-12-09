@@ -64,7 +64,7 @@ const uri = `${url}/${dbName}`
 const options = { useNewUrlParser: true, useUnifiedTopology: true }
 mongoose
   .connect(uri, options)
-  .then(() => app.listen(4000, console.log("Server is listening on 4000")))
+  .then(() => app.listen(8080, console.log("Server is listening on 8080")))
   .catch(error => {
     throw error
   })

@@ -12,7 +12,14 @@
 ```
 # Create Article
 mutation {
-  createArticle(article : {title :"testing application again", body :"try test app with mocha"}) 
+  createArticle(article : {title :"testing application again", body :"try test app with mocha"}){
+    _id
+    title
+    body
+    comments {
+      comment
+    }
+  }
 }
 
 # get all list Article

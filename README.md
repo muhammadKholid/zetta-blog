@@ -48,12 +48,13 @@ query {
 
 # get article by specific ID
 query {
-  article(id:"61b19f6fa0f66f37f5444e59"){
+  article(_id:"61b23542df6f6d5db32120d2"){
     _id
     title
     body
     comments {
-    comment
+    	comment
+    }
   }
 }
 
@@ -77,7 +78,7 @@ query {
 
 # Get comment by specific ID
 query {
-  comment(id:"61b1b010b16a4000c3a514c4"){
+  comment(_id:"61b2374916f2aa174acca0c9"){
     _id
     comment
   }
@@ -85,7 +86,10 @@ query {
 
 # Create comment
 mutation {
-  createComment(comment: "halah kurang lengkap gan, up", id:"61b1a3f83bf58e85280fb2a3") 
+  createComment(comment: "halah kurang lengkap gan, up", id:"61b228faa0964defdf2dbe66"){
+    _id
+    comment
+  } 
 }
 
 # Delete Comment

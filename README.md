@@ -36,7 +36,7 @@ query {
   }
 }
 
-#Update Article
+# Update Article
 mutation {
   updateArticle(id:"61b19f6fa0f66f37f5444e59", title:"update", body :"update body")
 }
@@ -46,15 +46,15 @@ mutation {
   deleteArticle(id : "61b19f6fa0f66f37f5444e59")
 }
 
-#get list Comments
+# get list Comments
 query {
   comments {
     _id
-		comment
+    comment
   }
 }
 
-#Get comment by specific ID
+# Get comment by specific ID
 query {
   comment(id:"61b1b010b16a4000c3a514c4"){
     _id
@@ -67,7 +67,7 @@ mutation {
   createComment(comment: "halah kurang lengkap gan, up", article_id:"61b1a3f83bf58e85280fb2a3") 
 }
 
-#Delete Comment
+# Delete Comment
 mutation {
   deleteComment(id:"61b1b049e4fd6f08d6f0c21e")
 }

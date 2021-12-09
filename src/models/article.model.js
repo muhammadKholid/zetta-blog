@@ -30,6 +30,6 @@ const findByIdAndDelete = id => {
 }
 
 module.exports = {
-  find, findById, create, findByIdAndDelete, findByIdAndUpdate
+  find, findById, create, findByIdAndDelete, findByIdAndUpdate 
 };
 

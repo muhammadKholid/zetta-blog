@@ -23,12 +23,12 @@ module.exports = buildSchema(`
   }
 
   type RootQuery {
+    articles(sortBy: String,sortOrder: Int,filter: String,pagination: Int): [Article!]
     article(id: String!): Article!
     comments : [Comment!]
     comment(id: String): Comment
   }
   type Mutation {
-    articles(sortBy: String,sortOrder: Int,filter: String,pagination: Int): [Article!]
     createArticle(article:ArticleType): String,
     deleteArticle(id: String): String,
     updateArticle(id: String, body: String, title : String): String

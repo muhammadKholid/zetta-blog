@@ -1,22 +1,16 @@
-const {find, findById, findByIdAndDelete, findByIdAndUpdate, create} = require("../models/article.model")
+const {find, findAggregate, findById, findByIdAndDelete, findByIdAndUpdate, create} = require("../models/article.model")
 const {findComment, findByIdComment, findByIdAndDeleteComment, findByIdAndUpdateComment, createComment} = require("../models/comment.model")
+// const { db } = require('../config/database.config');
+// const dbase = db();
+// const Article = dbase.collection('articles')
+// const { ObjectId } = require('mongodb');
 
 module.exports = {
   articles: async args => {
     try {
-      const {sortBy, sortOrder, filter, pagination} = args;
-      const articleFetched = await find([
-        {$sort : { title: sortOrder ? 1 : -1 } },
-{
-     $lookup:
-       {
-         from: "comments",
-         localField: "_id",
-         foreignField: "article_id",
-         as: "comments"
-       }
-        },
-      ])
+      // const {sortBy, sortOrder, filter, pagination} = args;
+      // const articleFetched = await Article.aggregate()
+      const articleFetched = await find()
       return articleFetched;
     } catch (error) {
     console.log(error);
@@ -61,7 +55,7 @@ module.exports = {
   },
   createComment: async args => {
     try {
-      const com = await createComment(args);
+      const article = await createComment(args);
       // console.log(art);
       return 'succesfully create new comments';
     } catch (error) {
@@ -90,7 +84,7 @@ module.exports = {
     }
   },
 
-  deleteArcticle: async args => {
+  deleteArticle: async args => {
     try {
       await findByIdAndDelete(args.id);
       // return {
@@ -118,6 +112,5 @@ module.exports = {
       throw error
     }
   },
-
 } 
 

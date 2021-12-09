@@ -15,9 +15,9 @@ mutation {
   createArticle(article : {title :"testing application again", body :"try test app with mocha"}) 
 }
 
-# get list Article
+# get all list Article
 query {
-  articles(sortBy:"title", sortOrder:0, filter:"haha", pagination: 2) {
+  articles {
     _id
     title
     body
@@ -27,12 +27,26 @@ query {
   }
 }
 
+# get list articles with sort by title, filter by title, and pagination
+query {
+  articlesAggregator(page:1, size:6, sortBy:"title", sortOrder:1, filter:"bla bla") {
+    _id
+    body
+    title
+   comments {
+      comment
+   }
+  }
+ }
+
 # get article by specific ID
 query {
   article(id:"61b19f6fa0f66f37f5444e59"){
     _id
     title
     body
+    comments {
+    comment
   }
 }
 
@@ -64,7 +78,7 @@ query {
 
 # Create comment
 mutation {
-  createComment(comment: "halah kurang lengkap gan, up", article_id:"61b1a3f83bf58e85280fb2a3") 
+  createComment(comment: "halah kurang lengkap gan, up", id:"61b1a3f83bf58e85280fb2a3") 
 }
 
 # Delete Comment

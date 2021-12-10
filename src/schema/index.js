@@ -1,7 +1,4 @@
 const { buildSchema } = require('graphql');
-  // """
-  // A Post refers to available attributes for a Post
-  // """
 
 module.exports = buildSchema(`
   type Article {

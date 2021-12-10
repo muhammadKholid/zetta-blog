@@ -25,7 +25,6 @@ module.exports = {
   articlesAggregator: async args => {
     try {
       const {page, size, sortBy, sortOrder, filter} = args;
-      // const articleFetched = await Article.aggregate()
 
       const articleFetched = await Article.aggregate([
         { $match: {title : {$regex : `.*${filter}.*`, $options: 'i'}}},
@@ -40,18 +39,6 @@ module.exports = {
       }},
       ])
       return articleFetched;
-    //   const articleFetched = await Article.find().populate({
-    //   path: 'comments',
-    //   select:
-    //     'comment',
-    // }).exec()
-      // return articleFetched.map(art => {
-      //   return {
-      //     ...art._doc,
-      //     _id: art._id,
-      //     createdAt: new Date(art._doc.createdAt).toISOString(),
-      //   }
-      // })
     } catch (error) {
     console.log(error);
       throw error
@@ -79,7 +66,6 @@ module.exports = {
         _id: articleFetched._id,
         createdAt: new Date(articleFetched._doc.createdAt).toISOString(),
       }
-      // return articleFetched;
     } catch (error) {
     console.log(error)
       throw error
@@ -119,7 +105,6 @@ module.exports = {
       const findArt = await Article.findById(id);
       findArt.comments.push(newCom._id);
       await findArt.save();
-      // console.log(newCom, newCom._doc);
 
       return { ...newCom._doc, _id: newCom.id }
     } catch (error) {

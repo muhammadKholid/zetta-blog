@@ -1,9 +1,3 @@
-// const {find, findAggregate, findById, findByIdAndDelete, findByIdAndUpdate, create} = require("../models/article.model")
-// const {findComment, findByIdComment, findByIdAndDeleteComment, findByIdAndUpdateComment, createComment} = require("../models/comment.model")
-// const { db } = require('../config/database.config');
-// const dbase = db();
-// const Article = dbase.collection('articles')
-// const { ObjectId } = require('mongodb');
 const Article = require('../models/article.model');
 const Comment = require('../models/comment.model');
 
@@ -34,7 +28,7 @@ module.exports = {
       // const articleFetched = await Article.aggregate()
 
       const articleFetched = await Article.aggregate([
-        { $match: {title : filter}},
+        { $match: {title : {$regex : `.*${filter}.*`, $options: 'i'}}},
         { $sort : {[`${sortBy}`] : sortOrder ? -1 : 1}},
         { $skip : size * (page - 1)},
         { $limit : size },

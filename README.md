@@ -35,6 +35,11 @@ query {
 }
 
 # get list articles with sort by title, filter by title, and pagination
+# page is what page number
+# size is how many datas in every page
+# sortBy is you wanna sort it by key in collection
+# sortOrder is Int, 1 or 0, is descending or ascending
+# filter is filter by title for simple filter
 query {
   articlesAggregator(page:1, size:6, sortBy:"title", sortOrder:1, filter:"bla bla") {
     _id
